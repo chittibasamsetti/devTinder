@@ -68,16 +68,50 @@
 
 
 
+// const express=require("express");
+// const app=express();
+// const{userAuth}=require("./middlewares/auths");
+
+// app.use("/",userAuth,(req,res,next)=>{
+//     res.send("welcome to home page");
+// });
+
+// app.get("/user",(req,res)=>{
+//     res.send("User data accessed");
+// });
+
+// app.listen(7777);
+
+
 const express=require("express");
+
+
+const {connectDb}=require("./config/database");
 const app=express();
-const{userAuth}=require("./middlewares/auths");
+const User=require("./models/user")
 
-app.use("/",userAuth,(req,res,next)=>{
-    res.send("welcome to home page");
+
+app.post("/signup", async (req,res)=>{
+    const user=new User({
+        firstName:"chitti",
+        lastName:"basamsetti",
+        age:23
+    });
+
+    try{
+        await user.save();
+        res.send("user signedup successfully");
+    }
+    catch(err){
+        res.status(400).send("error in signing up the useer"+err);
+    }
+});
+connectDb().then(()=>{
+    console.log("Dtabase is connected era chittoda");
+}).catch((err)=>{
+    console.error("database is not conneccted");
 });
 
-app.get("/user",(req,res)=>{
-    res.send("User data accessed");
-});
-
-app.listen(7777);
+app.listen(7777,()=>{
+    console.log("server is running on the port 7777");
+})
