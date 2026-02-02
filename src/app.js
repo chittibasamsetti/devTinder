@@ -130,13 +130,20 @@ app.delete("/user",async(req,res)=>{
         
 })
 
-app.put("/user",async(req,res)=>{
-    try{
-        await User.findByIdAndUpdate({_id:req.body._id},{firstName:req.body.firstName});
+app.patch("/user/:userId",async(req,res)=>{
+const userId=req.params.userId;   
+ try{
+        const AllowedUpdates=["_id","firstName","lastName","password"];
+        const isAllowedUpdates=Object.keys(req.body).every((k)=>AllowedUpdates.includes(k));
+        if(!isAllowedUpdates){
+            throw new Error("Update not allowed");
+        }
+        await User.findByIdAndUpdate({_id:userId}, req.body, {runValidators:true});
+        
         res.send("user updated successfully");
     }
     catch(err){
-        res.status(400).send("user not found");
+        res.status(400).send(err.message); 
     }
 })
 
