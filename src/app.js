@@ -89,14 +89,53 @@ const app=express();
 const User=require("./models/user");
 const {connectDb}=require("./config/database");
 app.use(express.json());
+
+const {validateSignUpData}=require("./utils/validattion");
+const bcrypt=require("bcrypt");
 // to send the data to database from user dinamically using postman
 app.post("/signup",async(req,res)=>{
-    const user=new User(
+    
+    try{
+        validateSignUpData(req);
+
+const {firstName, lastName, email, password}=req.body;
+        const passwordHash=await bcrypt.hash(password,10);
+
+        const user=new User(
     req.body
     );
-await user.save();
+        await user.save();
 res.send("user signed up successfully");
+    }
+    catch(err){
+        res.status(400).send("ERROR :"+err.message);
+    };
+
 }) 
+
+app.post("/login",async(req,res)=>{
+    const {email, password}=req.body;    
+    try{
+        const user=await User.findOne({email:email});
+        console.log(user);
+        if(!user){
+            throw new Error("email not found");
+        }
+        const isPasswordMatch=await bcrypt.compare(password, user.password);
+        if(!isPasswordMatch){
+            throw new Error("password incorrect");
+        }
+        else{
+            res.send("user logged successfully");
+        }
+
+    }
+    catch(err){
+res.status(400).send("ERROR :"+err.message);
+    }
+})
+
+
 //to get the user data from database using id
 app.get("/user",async(req,res)=>{
     try{
