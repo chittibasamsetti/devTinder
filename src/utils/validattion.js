@@ -11,4 +11,11 @@ const validateSignUpData=(req)=>{
         throw new Error("Plz enter strong password");
     }
 };
-module.exports={validateSignUpData};
+
+const validateEditProfileData=(req)=>{
+const allowedEdits=["firstName","lastName","gender","skills","about"];
+const isEditProfile=Object.keys(req.body).every((k)=>allowedEdits.includes(k));
+return isEditProfile
+
+}
+module.exports={validateSignUpData,validateEditProfileData};

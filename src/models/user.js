@@ -1,5 +1,7 @@
 const mongoose=require("mongoose");
 const validator=require("validator");
+const jwt=require("jsonwebtoken");
+const bcrypt=require("bcrypt");
 const userSchema=mongoose.Schema({
     firstName:{type:String},
     lastName:{type:String},
@@ -12,7 +14,9 @@ const userSchema=mongoose.Schema({
         }
     }
     },
-    password:{type:String},
+    password:{type:String,
+       
+    },
     gender:{
         type:String,
         validate(value){
@@ -23,9 +27,24 @@ const userSchema=mongoose.Schema({
     },
 skills:{
     type:[String]
+},
+about:{type:String,
+    maxlength:200,
+    default:"Hey there! I am using DevTinder."
 }
 },{timestamps:true});
 
+userSchema.methods.getJWT=async function(){
+    const user=this;
+    const token=await jwt.sign({_id:user._id},"secret",{expiresIn:"7d"});
+    return token;
+};
 
+userSchema.methods.validatePassword=async function(passwordInputByUser){
+    const user=this;
+    const passwordHash=user.password;
+    const isPassword=await bcrypt.compare(passwordInputByUser,passwordHash);
+    return isPassword;
+};
 
 module.exports=mongoose.model("User",userSchema);
