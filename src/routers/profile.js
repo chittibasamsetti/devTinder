@@ -36,7 +36,7 @@ res.status(400).send("ERROR :"+err.message);
 
 });
 
-profileRouter.patch("/profile/changepassword",userAuth, async(req,res)=>{
+profileRouter.patch("/profile/changePassword",userAuth, async(req,res)=>{
     try{
         const user=req.user;
         

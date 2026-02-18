@@ -2,6 +2,8 @@ const mongoose=require("mongoose");
 const validator=require("validator");
 const jwt=require("jsonwebtoken");
 const bcrypt=require("bcrypt");
+
+
 const userSchema=mongoose.Schema({
     firstName:{type:String},
     lastName:{type:String},
@@ -33,6 +35,9 @@ about:{type:String,
     default:"Hey there! I am using DevTinder."
 }
 },{timestamps:true});
+
+userSchema.index({firstName:1});
+userSchema.index({lastName:1});
 
 userSchema.methods.getJWT=async function(){
     const user=this;
