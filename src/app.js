@@ -93,7 +93,9 @@ const {connectDb}=require("./config/database");
 // const bcrypt=require("bcrypt");
 const cookieParser=require("cookie-parser");
 // const jwt=require("jsonwebtoken");
+const cors=require("cors");
 
+ app.use(cors({origin:"http://localhost:5173",credentials:true}));
 app.use(express.json());
  app.use(cookieParser());
 const authRouter=require("./routers/auth");

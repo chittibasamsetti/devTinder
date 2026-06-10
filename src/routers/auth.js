@@ -32,7 +32,7 @@ authRouter.post("/login", async(req,res)=>{
     const {email, password}=req.body;    
     try{
         const user=await User.findOne({email:email});
-        console.log(user);
+        // console.log(user);
         if(!user){
             throw new Error("email not found");
         }
@@ -42,8 +42,8 @@ authRouter.post("/login", async(req,res)=>{
         }
         else{
             const token= await user.getJWT();
-            res.cookie("token", token);
-            res.send("user logged successfully");
+            res.cookie("token", token,);
+            res.send(user);
         }
 
     }
